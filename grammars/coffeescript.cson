@@ -169,32 +169,6 @@
     'name': 'keyword.reserved.coffee'
   }
   {
-    # a: -> ...
-    # a: (args) -> ...
-    'begin': '''(?x)
-      (?<=\\s|^)((@)?[a-zA-Z_$][\\w$]*)
-      \\s*([:=])\\s*
-      (?=(\\([^\\(\\)]*\\)\\s*)?[=-]>)
-    '''
-    'beginCaptures':
-      '1':
-        'name': 'entity.name.function.coffee'
-      '2':
-        'name': 'variable.other.readwrite.instance.coffee'
-      '3':
-        'name': 'keyword.operator.assignment.coffee'
-    'end': '[=-]>'
-    'endCaptures':
-      '0':
-        'name': 'storage.type.function.coffee'
-    'name': 'meta.function.coffee'
-    'patterns': [
-      {
-        'include': '#function_params'
-      }
-    ]
-  }
-  {
     # "a": -> ...
     # "a": (args) -> ...
     'begin': '''(?x)
@@ -233,6 +207,32 @@
     ]
   }
   {
+    # a: -> ...
+    # a: (args) -> ...
+    # a = -> ...
+    # a = (args) => ...
+    'begin': '''(?x)
+      (@?[a-zA-Z_$][\\w$]*)
+      \\s*([:=])\\s*
+      (?=(\\([^\\(\\)]*\\)\\s*)?[=-]>)
+    '''
+    'beginCaptures':
+      '1':
+        'name': 'function.name.assignment.coffee'
+      '2':
+        'name': 'keyword.operator.assignment.coffee'
+    'end': '[=-]>'
+    'endCaptures':
+      '0':
+        'name': 'storage.type.function.coffee'
+    'name': 'meta.function.coffee'
+    'patterns': [
+      {
+        'include': '#function_params'
+      }
+    ]
+  }
+  {
     # (args) -> ...
     # -> ...
     'begin': '(?=(\\([^\\(\\)]*\\)\\s*)?[=-]>)'
@@ -248,6 +248,7 @@
     ]
   }
   {
+    'comment': 'Object destructuring'
     'begin': '(?<=\\s|^)({)(?=[^\'"#]+?}[\\s\\]}]*=)'
     'beginCaptures':
       '1':
@@ -268,6 +269,7 @@
     ]
   }
   {
+    'comment': 'Array destructuring'
     'begin': '(?<=\\s|^)(\\[)(?=[^\'"#]+?\\][\\s\\]}]*=)'
     'beginCaptures':
       '1':
@@ -288,26 +290,7 @@
     ]
   }
   {
-    'match': '\\b(?<!\\.|::)(true|on|yes)(?!\\s*[:=][^=])\\b'
-    'name': 'constant.language.boolean.true.coffee'
-  }
-  {
-    'match': '\\b(?<!\\.|::)(false|off|no)(?!\\s*[:=][^=])\\b'
-    'name': 'constant.language.boolean.false.coffee'
-  }
-  {
-    'match': '\\b(?<!\\.|::)null(?!\\s*[:=][^=])\\b'
-    'name': 'constant.language.null.coffee'
-  }
-  {
-    'match': '\\b(?<!\\.|::)extends(?!\\s*[:=])\\b'
-    'name': 'variable.language.coffee'
-  }
-  {
-    'match': '(?<!\\.)\\b(?<!\\$)(super|this|arguments)(?!\\s*[:=][^=]|\\$)\\b'
-    'name': 'variable.language.$1.coffee'
-  }
-  {
+    'comment': 'Anonymous class'
     'captures':
       '1':
         'name': 'storage.type.class.coffee'
@@ -319,6 +302,7 @@
     'name': 'meta.class.coffee'
   }
   {
+    'comment': 'Named class'
     'captures':
       '1':
         'name': 'storage.type.class.coffee'
@@ -328,52 +312,11 @@
         'name': 'keyword.control.inheritance.coffee'
       '4':
         'name': 'entity.other.inherited-class.coffee'
-    'match': '(?<=\\s|^|\\[|\\()(class\\b)\\s+(@?[a-zA-Z\\$_][\\w\\.]*)?(?:\\s+(extends)\\s+(@?[a-zA-Z\\$\\._][\\w\\.]*))?'
+    'match': '(?<=\\s|^|\\[|\\()(class\\b)\\s+(@?[a-zA-Z\\$_][\\w\\.]*)(?:\\s+(extends)\\s+(@?[a-zA-Z\\$\\._][\\w\\.]*))?'
     'name': 'meta.class.coffee'
   }
   {
-    'match': '\\b(debugger|\\\\)\\b'
-    'name': 'keyword.other.coffee'
-  }
-  {
-    'match': '\\b(Array|ArrayBuffer|Blob|Boolean|Date|document|Function|Int(8|16|32|64)Array|Math|Map|Number|Object|Proxy|RegExp|Set|String|WeakMap|window|Uint(8|16|32|64)Array|XMLHttpRequest)\\b'
-    'name': 'support.class.coffee'
-  }
-  {
-    'match': '\\b(console)\\b'
-    'name': 'entity.name.type.object.coffee'
-  }
-  {
-    'match': '((?<=console\\.)(debug|warn|info|log|error|time|timeEnd|assert))\\b'
-    'name': 'support.function.console.coffee'
-  }
-  {
-    'match': '((?<=\\.)(apply|call|concat|every|filter|forEach|from|hasOwnProperty|indexOf|isPrototypeOf|join|lastIndexOf|map|of|pop|propertyIsEnumerable|push|reduce(Right)?|reverse|shift|slice|some|sort|splice|to(Locale)?String|unshift|valueOf))\\b'
-    'name': 'support.function.method.array.coffee'
-  }
-  {
-    'match': '((?<=Array\\.)(isArray))\\b'
-    'name': 'support.function.static.array.coffee'
-  }
-  {
-    'match': '((?<=Object\\.)(create|definePropert(ies|y)|freeze|getOwnProperty(Descriptors?|Names)|getProperty(Descriptor|Names)|getPrototypeOf|is(Extensible|Frozen|Sealed)?|isnt|keys|preventExtensions|seal))\\b'
-    'name': 'support.function.static.object.coffee'
-  }
-  {
-    'match': '((?<=Math\\.)(abs|acos|acosh|asin|asinh|atan|atan2|atanh|ceil|cos|cosh|exp|expm1|floor|hypot|log|log10|log1p|log2|max|min|pow|random|round|sign|sin|sinh|sqrt|tan|tanh|trunc))\\b'
-    'name': 'support.function.static.math.coffee'
-  }
-  {
-    'match': '((?<=Number\\.)(is(Finite|Integer|NaN)|toInteger))\\b'
-    'name': 'support.function.static.number.coffee'
-  }
-  {
-    'match': '(?<!\\.)\\b(module|exports|__filename|__dirname|global|process)(?!\\s*:)\\b'
-    'name': 'support.variable.coffee'
-  }
-  {
-    'match': '\\b(Infinity|NaN|undefined)\\b'
-    'name': 'constant.language.coffee'
+    'include': '#keywords'
   }
   {
     'include': '#operators'
@@ -531,6 +474,16 @@
         ]
       }
     ]
+  'embedded_comment':
+    'patterns': [
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.comment.coffee'
+        'match': '(?<!\\\\)(#).*$\\n?'
+        'name': 'comment.line.number-sign.coffee'
+      }
+    ]
   'function_calls':
     'patterns': [
       {
@@ -581,14 +534,6 @@
   'function_names':
     'patterns': [
       {
-        'match': '''(?x)
-          \\b(isNaN|isFinite|eval|uneval|parseInt|parseFloat|decodeURI|
-          decodeURIComponent|encodeURI|encodeURIComponent|escape|unescape|
-          require|set(Interval|Timeout)|clear(Interval|Timeout))\\b
-        '''
-        'name': 'support.function.coffee'
-      }
-      {
         'match': "[a-zA-Z_$][\\w$]*"
         'name': 'entity.name.function.coffee'
       }
@@ -632,28 +577,11 @@
         ]
       }
     ]
-  'embedded_comment':
-    'patterns': [
-      {
-        'captures':
-          '1':
-            'name': 'punctuation.definition.comment.coffee'
-        'match': '(?<!\\\\)(#).*$\\n?'
-        'name': 'comment.line.number-sign.coffee'
-      }
-    ]
   'instance_variable':
     'patterns': [
       {
         'match': '(@)([a-zA-Z_\\$]\\w*)?'
         'name': 'variable.other.readwrite.instance.coffee'
-      }
-    ]
-  'variable_name':
-    'patterns': [
-      {
-        'match': '[a-zA-Z_\\$]\\w*'
-        'name': 'variable.other.readwrite.coffee'
       }
     ]
   'interpolated_coffee':
@@ -670,6 +598,45 @@
             'include': '$self'
           }
         ]
+      }
+    ]
+  'keywords':
+    'patterns': [
+      {
+        'match': '\\b(debugger)\\b'
+        'name': 'keyword.debugger.coffee'
+      }
+      {
+        'match': '\\b(Infinity)\\b'
+        'name': 'constant.numeric.infinity.coffee'
+      }
+      {
+        'match': '\\b(NaN)\\b'
+        'name': 'constant.numeric.nan.coffee'
+      }
+      {
+        'match': '\\b(undefined)\\b'
+        'name': 'constant.undefined.coffee'
+      }
+      {
+        'match': '\\b(?<!\\.|::)(true|on|yes)(?!\\s*[:=][^=])\\b'
+        'name': 'constant.language.boolean.true.coffee'
+      }
+      {
+        'match': '\\b(?<!\\.|::)(false|off|no)(?!\\s*[:=][^=])\\b'
+        'name': 'constant.language.boolean.false.coffee'
+      }
+      {
+        'match': '\\b(?<!\\.|::)null(?!\\s*[:=][^=])\\b'
+        'name': 'constant.language.null.coffee'
+      }
+      {
+        'match': '\\b(?<!\\.|::)extends(?!\\s*[:=])\\b'
+        'name': 'variable.language.coffee'
+      }
+      {
+        'match': '(?<!\\.)\\b(?<!\\$)(super|this|arguments)(?!\\s*[:=][^=]|\\$)\\b'
+        'name': 'variable.language.$1.coffee'
       }
     ]
   'method_calls':
@@ -721,90 +688,6 @@
     ]
   'method_names':
     'patterns': [
-      {
-        'match': '''(?x)
-          \\bon(Rowsinserted|Rowsdelete|Rowenter|Rowexit|Resize|Resizestart|Resizeend|Reset|
-          Readystatechange|Mouseout|Mouseover|Mousedown|Mouseup|Mousemove|
-          Before(cut|deactivate|unload|update|paste|print|editfocus|activate)|
-          Blur|Scrolltop|Submit|Select|Selectstart|Selectionchange|Hover|Help|
-          Change|Contextmenu|Controlselect|Cut|Cellchange|Clock|Close|Deactivate|
-          Datasetchanged|Datasetcomplete|Dataavailable|Drop|Drag|Dragstart|Dragover|
-          Dragdrop|Dragenter|Dragend|Dragleave|Dblclick|Unload|Paste|Propertychange|Error|
-          Errorupdate|Keydown|Keyup|Keypress|Focus|Load|Activate|Afterupdate|Afterprint|Abort)\\b
-        '''
-        'name': 'support.function.event-handler.coffee'
-      }
-      {
-        'match': '''(?x)
-          \\b(shift|showModelessDialog|showModalDialog|showHelp|scroll|scrollX|scrollByPages|
-          scrollByLines|scrollY|scrollTo|stop|strike|sizeToContent|sidebar|signText|sort|
-          sup|sub|substr|substring|splice|split|send|set(Milliseconds|Seconds|Minutes|Hours|
-          Month|Year|FullYear|Date|UTC(Milliseconds|Seconds|Minutes|Hours|Month|FullYear|Date)|
-          Time|Hotkeys|Cursor|ZOptions|Active|Resizable|RequestHeader)|search|slice|
-          savePreferences|small|home|handleEvent|navigate|char|charCodeAt|charAt|concat|
-          contextual|confirm|compile|clear|captureEvents|call|createStyleSheet|createPopup|
-          createEventObject|to(GMTString|UTCString|String|Source|UpperCase|LowerCase|LocaleString)|
-          test|taint|taintEnabled|indexOf|italics|disableExternalCapture|dump|detachEvent|unshift|
-          untaint|unwatch|updateCommands|join|javaEnabled|pop|push|plugins.refresh|paddings|parse|
-          print|prompt|preference|enableExternalCapture|exec|execScript|valueOf|UTC|find|file|
-          fileModifiedDate|fileSize|fileCreatedDate|fileUpdatedDate|fixed|fontsize|fontcolor|
-          forward|fromCharCode|watch|link|load|lastIndexOf|anchor|attachEvent|atob|apply|alert|
-          abort|routeEvents|resize|resizeBy|resizeTo|recalc|returnValue|replace|reverse|reload|
-          releaseCapture|releaseEvents|go|get(Milliseconds|Seconds|Minutes|Hours|Month|Day|Year|FullYear|
-          Time|Date|TimezoneOffset|UTC(Milliseconds|Seconds|Minutes|Hours|Day|Month|FullYear|Date)|
-          Attention|Selection|ResponseHeader|AllResponseHeaders)|moveBy|moveBelow|moveTo|
-          moveToAbsolute|moveAbove|mergeAttributes|match|margins|btoa|big|bold|borderWidths|blink|back)\\b
-        '''
-        'name': 'support.function.coffee'
-      }
-      {
-        'match': '''(?x)
-          \\b(acceptNode|add|addEventListener|addTextTrack|adoptNode|after|animate|append|
-          appendChild|appendData|before|blur|canPlayType|captureStream|
-          caretPositionFromPoint|caretRangeFromPoint|checkValidity|clear|click|
-          cloneContents|cloneNode|cloneRange|close|closest|collapse|
-          compareBoundaryPoints|compareDocumentPosition|comparePoint|contains|
-          convertPointFromNode|convertQuadFromNode|convertRectFromNode|createAttribute|
-          createAttributeNS|createCaption|createCDATASection|createComment|
-          createContextualFragment|createDocument|createDocumentFragment|
-          createDocumentType|createElement|createElementNS|createEntityReference|
-          createEvent|createExpression|createHTMLDocument|createNodeIterator|
-          createNSResolver|createProcessingInstruction|createRange|createShadowRoot|
-          createTBody|createTextNode|createTFoot|createTHead|createTreeWalker|delete|
-          deleteCaption|deleteCell|deleteContents|deleteData|deleteRow|deleteTFoot|
-          deleteTHead|detach|disconnect|dispatchEvent|elementFromPoint|elementsFromPoint|
-          enableStyleSheetsForSet|entries|evaluate|execCommand|exitFullscreen|
-          exitPointerLock|expand|extractContents|fastSeek|firstChild|focus|forEach|get|
-          getAll|getAnimations|getAttribute|getAttributeNames|getAttributeNode|
-          getAttributeNodeNS|getAttributeNS|getBoundingClientRect|getBoxQuads|
-          getClientRects|getContext|getDestinationInsertionPoints|getElementById|
-          getElementsByClassName|getElementsByName|getElementsByTagName|
-          getElementsByTagNameNS|getItem|getNamedItem|getSelection|getStartDate|
-          getVideoPlaybackQuality|has|hasAttribute|hasAttributeNS|hasAttributes|
-          hasChildNodes|hasFeature|hasFocus|importNode|initEvent|insertAdjacentElement|
-          insertAdjacentHTML|insertAdjacentText|insertBefore|insertCell|insertData|
-          insertNode|insertRow|intersectsNode|isDefaultNamespace|isEqualNode|
-          isPointInRange|isSameNode|item|key|keys|lastChild|load|lookupNamespaceURI|
-          lookupPrefix|matches|move|moveAttribute|moveAttributeNode|moveChild|
-          moveNamedItem|namedItem|nextNode|nextSibling|normalize|observe|open|
-          parentNode|pause|play|postMessage|prepend|preventDefault|previousNode|
-          previousSibling|probablySupportsContext|queryCommandEnabled|
-          queryCommandIndeterm|queryCommandState|queryCommandSupported|queryCommandValue|
-          querySelector|querySelectorAll|registerContentHandler|registerElement|
-          registerProtocolHandler|releaseCapture|releaseEvents|remove|removeAttribute|
-          removeAttributeNode|removeAttributeNS|removeChild|removeEventListener|
-          removeItem|replace|replaceChild|replaceData|replaceWith|reportValidity|
-          requestFullscreen|requestPointerLock|reset|scroll|scrollBy|scrollIntoView|
-          scrollTo|seekToNextFrame|select|selectNode|selectNodeContents|set|setAttribute|
-          setAttributeNode|setAttributeNodeNS|setAttributeNS|setCapture|
-          setCustomValidity|setEnd|setEndAfter|setEndBefore|setItem|setNamedItem|
-          setRangeText|setSelectionRange|setSinkId|setStart|setStartAfter|setStartBefore|
-          slice|splitText|stepDown|stepUp|stopImmediatePropagation|stopPropagation|
-          submit|substringData|supports|surroundContents|takeRecords|terminate|toBlob|
-          toDataURL|toggle|toString|values|write|writeln)\\b
-        '''
-        'name': 'support.function.dom.coffee'
-      }
       {
         'match': "[a-zA-Z_$][\\w$]*"
         'name': 'entity.name.function.coffee'
@@ -863,19 +746,25 @@
     'patterns': [
       {
         # OBJ in OBJ.prop, OBJ.methodCall()
-        'match': '[A-Z][A-Z0-9_$]*(?=\\s*\\??(\\.\\s*[a-zA-Z_$]\\w*|::))'
+        'match': '''(?x)
+          [A-Z][A-Z0-9_$]*
+          (?=\\s*\\??(\\.\\s*[a-zA-Z_$][\\w$]*|::))
+        '''
         'name': 'constant.other.object.coffee'
       }
       {
         # obj in obj.prop, obj.methodCall()
-        'match': '[a-zA-Z_$][\\w$]*(?=\\s*\\??(\\.\\s*[a-zA-Z_$]\\w*|::))'
+        'match': '''(?x)
+          [a-zA-Z_$][\\w$]*
+          (?=\\s*\\??(\\.\\s*[a-zA-Z_$][\\w$]*|::))
+        '''
         'name': 'variable.other.object.coffee'
       }
     ]
   'operators':
     'patterns': [
       {
-        'match': '(?:([a-zA-Z$_][\\w$]*)?\\s+|(?<![\\w$]))(and=|or=)'
+        'match': '(?:([a-zA-Z$_][\\.\\w$]*)?\\s+|(?<![\\w$]))(and=|or=)'
         'captures':
           '1':
             'name': 'variable.assignment.coffee'
@@ -883,7 +772,7 @@
             'name': 'keyword.operator.assignment.compound.coffee'
       }
       {
-        'match': '([a-zA-Z$_][\\w$]*)?\\s*(%=|\\+=|-=|\\*=|&&=|\\|\\|=|\\?=|(?<!\\()/=)'
+        'match': '([a-zA-Z$_][\\.\\w$]*)?\\s*(%=|\\+=|-=|\\*=|&&=|\\|\\|=|\\?=|(?<!\\()/=)'
         'captures':
           '1':
             'name': 'variable.assignment.coffee'
@@ -891,7 +780,7 @@
             'name': 'keyword.operator.assignment.compound.coffee'
       }
       {
-        'match': '([a-zA-Z$_][\\w$]*)?\\s*(&=|\\^=|<<=|>>=|>>>=|\\|=)'
+        'match': '([a-zA-Z$_][\\.\\w$]*)?\\s*(&=|\\^=|<<=|>>=|>>>=|\\|=)'
         'captures':
           '1':
             'name': 'variable.assignment.coffee'
@@ -967,7 +856,11 @@
     'patterns': [
       {
         # PROP1 in obj.PROP1.prop2, func().PROP1.prop2
-        'match': '(?:(\\.)|(::))\\s*([A-Z][A-Z0-9_$]*\\b\\$*)(?=\\s*\\??(\\.\\s*[a-zA-Z_$]\\w*|::))'
+        'match': '''(?x)
+          (?:(\\.)|(::))\\s*
+          ([A-Z][A-Z0-9_$]*+)
+          (?=\\s*\\??(\\.\\s*[a-zA-Z_$]\\w*|::))
+        '''
         'captures':
           '1':
             'name': 'punctuation.separator.property.period.coffee'
@@ -978,7 +871,11 @@
       }
       {
         # prop1 in obj.prop1.prop2, func().prop1.prop2
-        'match': '(?:(\\.)|(::))\\s*(\\$*[a-zA-Z_$][\\w$]*)(?=\\s*\\??(\\.\\s*[a-zA-Z_$]\\w*|::))'
+        'match': '''(?x)
+          (?:(\\.)|(::))\\s*
+          ([a-zA-Z_$][\\w$]*+)
+          (?=\\s*\\??(\\.\\s*[a-zA-Z_$]\\w*|::))
+        '''
         'captures':
           '1':
             'name': 'punctuation.separator.property.period.coffee'
@@ -989,7 +886,11 @@
       }
       {
         # PROP in obj.PROP, func().PROP
-        'match': '(?:(\\.)|(::))\\s*([A-Z][A-Z0-9_$]*\\b\\$*)'
+        'match': '''(?x)
+          (?:(\\.)|(::))\\s*
+          ([A-Z][A-Z0-9_$]*\\b)
+          (?!\\s*=(?![=>]))
+        '''
         'captures':
           '1':
             'name': 'punctuation.separator.property.period.coffee'
@@ -1000,7 +901,11 @@
       }
       {
         # prop in obj.prop, func().prop
-        'match': '(?:(\\.)|(::))\\s*(\\$*[a-zA-Z_$][\\w$]*)'
+        'match': '''(?x)
+          (?:(\\.)|(::))\\s*
+          ([a-zA-Z_$][\\w$]*\\b)
+          (?!\\s*=(?![=>]))
+        '''
         'captures':
           '1':
             'name': 'punctuation.separator.property.period.coffee'
@@ -1042,6 +947,13 @@
             'name': 'constant.character.escape.backslash.coffee'
           }
         ]
+      }
+    ]
+  'variable_name':
+    'patterns': [
+      {
+        'match': '[a-zA-Z_\\$][\\w$]*'
+        'name': 'variable.other.readwrite.coffee'
       }
     ]
   'regex-character-class':
